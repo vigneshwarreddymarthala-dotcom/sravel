@@ -92,15 +92,11 @@ export default function PostDetail() {
   }
 
   async function submitReport() {
-    await supabase.from('reports').insert({
-      reporter_id: user.id,
-      reported_post_id: post.id,
-      reason: reportData.reason,
-      description: reportData.description,
-      status: 'pending',
+    await supabase.rpc('report_post', {
+      p_post_id: post.id,
+      p_reason: reportData.reason,
+      p_description: reportData.description || null,
     })
-    // Hide post from feed immediately — admin will review
-    await supabase.from('posts').update({ status: 'removed' }).eq('id', post.id)
     setReportSent(true)
     setTimeout(() => {
       setShowReport(false)
