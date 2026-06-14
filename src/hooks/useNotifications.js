@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
@@ -6,34 +6,49 @@ export function useNotifications() {
   const { user } = useAuth()
   const [notifications, setNotifications] = useState([])
   const [unread, setUnread] = useState(0)
+  const channelRef = useRef(null)
 
   useEffect(() => {
     if (!user) return
     fetchNotifications()
 
-    const channel = supabase
-      .channel(`notif-${user.id}`)
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notifications',
-        filter: `user_id=eq.${user.id}`,
-      }, (payload) => {
-        setNotifications(prev => [payload.new, ...prev])
-        setUnread(prev => prev + 1)
-      })
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'notifications',
-        filter: `user_id=eq.${user.id}`,
-      }, () => {
-        fetchNotifications()
-      })
-      .subscribe()
+    // Always clean up any previous channel before creating a new one
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current)
+      channelRef.current = null
+    }
 
-    return () => supabase.removeChannel(channel)
-  }, [user])
+    try {
+      const channel = supabase
+        .channel(`notif-${user.id}-${Date.now()}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        }, (payload) => {
+          setNotifications(prev => [payload.new, ...prev])
+          setUnread(prev => prev + 1)
+        })
+        .on('postgres_changes', {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        }, () => {
+          fetchNotifications()
+        })
+        .subscribe()
+      channelRef.current = channel
+    } catch (_) {}
+
+    return () => {
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current)
+        channelRef.current = null
+      }
+    }
+  }, [user?.id])
 
   async function fetchNotifications() {
     if (!user) return
