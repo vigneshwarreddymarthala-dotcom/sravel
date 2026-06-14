@@ -124,9 +124,9 @@ export default function Chat() {
   const groups = groupByDay(messages)
 
   return (
-    <div className="flex flex-col h-screen md:h-screen bg-[#efeae2]">
+    <div className="flex flex-col bg-[#efeae2]" style={{ height: '100dvh' }}>
       {/* Header — WhatsApp style */}
-      <div className="bg-[#075e54] text-white px-4 pt-12 md:pt-4 pb-3 flex items-center gap-3 shadow-md z-10 shrink-0">
+      <div className="bg-[#075e54] text-white px-4 pb-3 flex items-center gap-3 shadow-md z-10 shrink-0" style={{ paddingTop: 'max(48px, calc(env(safe-area-inset-top) + 12px))' }}>
         <button
           onClick={() => navigate('/messages')}
           className="p-1.5 rounded-full hover:bg-white/10 transition-colors md:hidden"
@@ -174,7 +174,7 @@ export default function Chat() {
 
       {/* Messages */}
       <div
-        className="flex-1 overflow-y-auto px-3 py-4 md:px-6"
+        className="flex-1 overflow-y-auto px-3 py-4 md:px-6 overscroll-none"
         style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8c8c8' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
       >
         {messages.length === 0 ? (
@@ -252,7 +252,7 @@ export default function Chat() {
       </div>
 
       {/* Input bar — WhatsApp style */}
-      <div className="bg-[#f0f0f0] px-3 py-2 pb-safe shrink-0 border-t border-gray-200">
+      <div className="bg-[#f0f0f0] px-3 py-2 shrink-0 border-t border-gray-200" style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}>
         <form onSubmit={sendMessage} className="flex items-end gap-2 max-w-3xl mx-auto">
           {/* Emoji placeholder */}
           <button type="button" className="p-2.5 text-gray-500 hover:text-gray-700 flex-none">
