@@ -37,22 +37,23 @@ export function useNotifications() {
 
   async function fetchNotifications() {
     if (!user) return
-    const { data } = await supabase
-      .from('notifications')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(50)
-    if (data) {
-      setNotifications(data)
-      setUnread(data.filter(n => !n.read).length)
-    }
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50)
+      if (!error && data) {
+        setNotifications(data)
+        setUnread(data.filter(n => !n.read).length)
+      }
+    } catch (_) {}
   }
 
   async function markAllRead() {
-    await supabase
-      .from('notifications')
-      .update({ read: true })
-      .eq('read', false)
+    try {
+      await supabase.from('notifications').update({ read: true }).eq('read', false)
+    } catch (_) {}
     setUnread(0)
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
   }

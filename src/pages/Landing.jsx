@@ -60,13 +60,6 @@ export default function Landing() {
   const { session, profile } = useAuth()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (session && profile) {
-      if (profile.role === 'admin') navigate('/admin/dashboard')
-      else navigate('/feed')
-    }
-  }, [session, profile])
-
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
 
