@@ -20,6 +20,7 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true)
   const [accepting, setAccepting] = useState(false)
   const [alreadyConnected, setAlreadyConnected] = useState(false)
+  const [existingConnId, setExistingConnId] = useState(null)
   const [showReport, setShowReport] = useState(false)
   const [reportData, setReportData] = useState({ reason: '', description: '' })
   const [reportSent, setReportSent] = useState(false)
@@ -46,6 +47,7 @@ export default function PostDetail() {
         .eq('requester_id', user.id)
         .maybeSingle()
       setAlreadyConnected(!!conn)
+      setExistingConnId(conn?.id || null)
     }
     setLoading(false)
   }
@@ -189,8 +191,22 @@ export default function PostDetail() {
           </Button>
         )}
         {alreadyConnected && (
-          <div className="text-center py-3 bg-blue-50 rounded-xl text-sm text-blue-700 font-medium">
-            You're already connected on this post
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-sm font-semibold text-blue-800">You're already connected on this post</p>
+            </div>
+            <button
+              onClick={() => navigate(`/messages/${existingConnId}`)}
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-3 rounded-xl transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Open chat
+            </button>
           </div>
         )}
       </div>
