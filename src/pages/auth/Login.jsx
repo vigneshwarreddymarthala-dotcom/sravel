@@ -25,10 +25,16 @@ export default function Login() {
     }
     const { data: profile } = await supabase
       .from('users')
-      .select('id')
+      .select('id, role')
       .eq('id', (await supabase.auth.getUser()).data.user?.id)
       .single()
-    navigate(profile ? '/feed' : '/onboarding')
+    if (!profile) {
+      navigate('/onboarding')
+    } else if (profile.role === 'admin') {
+      navigate('/admin/dashboard')
+    } else {
+      navigate('/feed')
+    }
   }
 
   return (
@@ -39,7 +45,7 @@ export default function Login() {
             <span className="text-white text-2xl font-bold">S</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-gray-500 text-sm mt-1">Sign in to Speilfinder</p>
+          <p className="text-gray-500 text-sm mt-1">Sign in to sravel</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">

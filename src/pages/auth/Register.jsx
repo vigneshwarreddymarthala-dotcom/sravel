@@ -38,7 +38,7 @@ export default function Register() {
           <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <span className="text-white text-2xl font-bold">S</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Join Speilfinder</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Join sravel</h1>
           <p className="text-gray-500 text-sm mt-1">Connect with students across Germany</p>
         </div>
 
