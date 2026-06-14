@@ -23,11 +23,13 @@ import EditProfile from './pages/profile/EditProfile'
 import UserProfile from './pages/profile/UserProfile'
 import Support from './pages/support/Support'
 import MyTickets from './pages/support/MyTickets'
+import Notifications from './pages/notifications/Notifications'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminPosts from './pages/admin/AdminPosts'
 import AdminSupport from './pages/admin/AdminSupport'
 import AdminReports from './pages/admin/AdminReports'
+import AdminNotifications from './pages/admin/AdminNotifications'
 
 export default function App() {
   return (
@@ -58,6 +60,7 @@ export default function App() {
             <Route path="/profile/:userId" element={<UserProfile />} />
             <Route path="/support" element={<Support />} />
             <Route path="/support/tickets" element={<MyTickets />} />
+            <Route path="/notifications" element={<Notifications />} />
           </Route>
 
           {/* Admin panel */}
@@ -68,6 +71,7 @@ export default function App() {
             <Route path="posts" element={<AdminPosts />} />
             <Route path="support" element={<AdminSupport />} />
             <Route path="reports" element={<AdminReports />} />
+            <Route path="notifications" element={<AdminNotifications />} />
           </Route>
         </Routes>
       </AuthProvider>

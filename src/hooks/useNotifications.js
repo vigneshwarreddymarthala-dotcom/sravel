@@ -12,7 +12,7 @@ export function useNotifications() {
     fetchNotifications()
 
     const channel = supabase
-      .channel('notifications')
+      .channel(`notif-${user.id}`)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
@@ -22,18 +22,26 @@ export function useNotifications() {
         setNotifications(prev => [payload.new, ...prev])
         setUnread(prev => prev + 1)
       })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'notifications',
+        filter: `user_id=eq.${user.id}`,
+      }, () => {
+        fetchNotifications()
+      })
       .subscribe()
 
     return () => supabase.removeChannel(channel)
   }, [user])
 
   async function fetchNotifications() {
+    if (!user) return
     const { data } = await supabase
       .from('notifications')
       .select('*')
-      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .limit(20)
+      .limit(50)
     if (data) {
       setNotifications(data)
       setUnread(data.filter(n => !n.read).length)
@@ -44,11 +52,10 @@ export function useNotifications() {
     await supabase
       .from('notifications')
       .update({ read: true })
-      .eq('user_id', user.id)
       .eq('read', false)
     setUnread(0)
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
   }
 
-  return { notifications, unread, markAllRead }
+  return { notifications, unread, markAllRead, refetch: fetchNotifications }
 }
