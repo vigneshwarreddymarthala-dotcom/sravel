@@ -13,7 +13,32 @@ export default function Feed() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!profile) return
     fetchPosts()
+
+    // Realtime: remove post instantly when it gets accepted/removed by anyone
+    const channel = supabase
+      .channel(`feed-${tab}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'posts',
+      }, (payload) => {
+        const updated = payload.new
+        if (updated.status !== 'open') {
+          setPosts(prev => prev.filter(p => p.id !== updated.id))
+        }
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'posts',
+      }, (payload) => {
+        setPosts(prev => prev.filter(p => p.id !== payload.old.id))
+      })
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
   }, [tab, profile])
 
   async function fetchPosts() {
