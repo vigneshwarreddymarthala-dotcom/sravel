@@ -99,8 +99,14 @@ export default function PostDetail() {
       description: reportData.description,
       status: 'pending',
     })
+    // Hide post from feed immediately — admin will review
+    await supabase.from('posts').update({ status: 'removed' }).eq('id', post.id)
     setReportSent(true)
-    setTimeout(() => { setShowReport(false); setReportSent(false) }, 2000)
+    setTimeout(() => {
+      setShowReport(false)
+      setReportSent(false)
+      navigate('/feed')
+    }, 2500)
   }
 
   if (loading) return <div className="flex justify-center py-20"><Spinner size="lg" /></div>
@@ -119,10 +125,14 @@ export default function PostDetail() {
         </button>
         <h2 className="text-lg font-semibold text-gray-900 flex-1 truncate">Post</h2>
         {!isOwn && (
-          <button onClick={() => setShowReport(true)} className="p-1 rounded-lg hover:bg-gray-100">
-            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          <button
+            onClick={() => setShowReport(true)}
+            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
             </svg>
+            Report
           </button>
         )}
       </div>
@@ -182,35 +192,67 @@ export default function PostDetail() {
       </div>
 
       {showReport && (
-        <div className="fixed inset-0 bg-black/50 flex items-end z-50" onClick={() => setShowReport(false)}>
-          <div className="bg-white w-full rounded-t-2xl p-6" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4" onClick={() => !reportSent && setShowReport(false)}>
+          <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl p-6 shadow-xl" onClick={e => e.stopPropagation()}>
             {reportSent ? (
-              <div className="text-center py-4">
-                <p className="text-green-600 font-medium">Report submitted. Thank you!</p>
+              <div className="flex flex-col items-center py-6 text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p className="text-lg font-bold text-gray-900 mb-1">Report submitted</p>
+                <p className="text-sm text-gray-500">This post has been taken down and is under review by our team. Thank you for keeping the community safe.</p>
               </div>
             ) : (
               <>
-                <h3 className="text-lg font-semibold mb-4">Report post</h3>
-                <select
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-3"
-                  value={reportData.reason}
-                  onChange={e => setReportData(p => ({ ...p, reason: e.target.value }))}
-                >
-                  <option value="">Select reason</option>
-                  {['Fake post','Inappropriate content','Spam','Safety concern','Other'].map(r => (
-                    <option key={r} value={r}>{r}</option>
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Report this post</h3>
+                    <p className="text-xs text-gray-400 mt-0.5">Post will be hidden immediately pending review</p>
+                  </div>
+                  <button onClick={() => setShowReport(false)} className="p-2 rounded-xl hover:bg-gray-100 text-gray-400">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Reason</p>
+                <div className="flex flex-col gap-2 mb-4">
+                  {['Safety concern', 'Fake post', 'Inappropriate content', 'Spam', 'Other'].map(r => (
+                    <button
+                      key={r}
+                      onClick={() => setReportData(p => ({ ...p, reason: r }))}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium text-left transition-colors ${
+                        reportData.reason === r
+                          ? 'border-red-400 bg-red-50 text-red-700'
+                          : 'border-gray-100 bg-gray-50 text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${reportData.reason === r ? 'border-red-500' : 'border-gray-300'}`}>
+                        {reportData.reason === r && <span className="w-2 h-2 bg-red-500 rounded-full" />}
+                      </span>
+                      {r}
+                    </button>
                   ))}
-                </select>
+                </div>
+
                 <textarea
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none mb-4"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-400 mb-4"
                   rows={3}
-                  placeholder="Additional details…"
+                  placeholder="Additional details (optional)…"
                   value={reportData.description}
                   onChange={e => setReportData(p => ({ ...p, description: e.target.value }))}
                 />
-                <Button className="w-full" onClick={submitReport} disabled={!reportData.reason}>
-                  Submit report
-                </Button>
+
+                <button
+                  onClick={submitReport}
+                  disabled={!reportData.reason}
+                  className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
+                >
+                  Submit report & hide post
+                </button>
               </>
             )}
           </div>

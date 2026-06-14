@@ -86,6 +86,12 @@ export default function AdminReports() {
     setToast('Post removed from feed')
   }
 
+  async function restorePost(report) {
+    await supabase.from('posts').update({ status: 'open' }).eq('id', report.reported_post.id)
+    await updateStatus(report, 'dismissed')
+    setToast(`Post restored to feed`)
+  }
+
   const filtered = filter === 'all' ? reports : reports.filter(r => r.status === filter)
   const pendingCount = reports.filter(r => r.status === 'pending').length
 
@@ -204,7 +210,10 @@ export default function AdminReports() {
                         )}
                         {report.reported_post && (
                           <div className="bg-orange-50 rounded-xl p-3 border border-orange-100">
-                            <p className="text-xs text-orange-400 mb-1 font-medium">Reported post</p>
+                            <div className="flex items-center justify-between mb-1">
+                              <p className="text-xs text-orange-400 font-medium">Reported post</p>
+                              <span className="text-[10px] bg-red-100 text-red-600 font-semibold px-2 py-0.5 rounded-full">Hidden from feed</span>
+                            </div>
                             <p className="text-sm font-semibold text-gray-900">{report.reported_post.title}</p>
                             <p className="text-xs text-gray-500 capitalize">{report.reported_post.type} · {report.reported_post.host_city}</p>
                           </div>
@@ -231,12 +240,20 @@ export default function AdminReports() {
                             </button>
                           )}
                           {report.reported_post && (
-                            <button
-                              onClick={() => removePost(report)}
-                              className="text-xs font-semibold px-4 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 transition-colors"
-                            >
-                              Remove post
-                            </button>
+                            <>
+                              <button
+                                onClick={() => removePost(report)}
+                                className="text-xs font-semibold px-4 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 transition-colors"
+                              >
+                                Keep removed
+                              </button>
+                              <button
+                                onClick={() => restorePost(report)}
+                                className="text-xs font-semibold px-4 py-2.5 rounded-xl bg-green-50 border border-green-200 text-green-700 hover:bg-green-100 transition-colors"
+                              >
+                                Restore to feed
+                              </button>
+                            </>
                           )}
                           <button
                             onClick={() => updateStatus(report, 'reviewed')}
