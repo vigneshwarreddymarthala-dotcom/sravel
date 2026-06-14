@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import { GERMAN_CITIES } from '../../lib/constants'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
-import Select from '../../components/ui/Select'
+import CitySelect from '../../components/ui/CitySelect'
 import Textarea from '../../components/ui/Textarea'
 
 export default function EditProfile() {
@@ -54,10 +53,7 @@ export default function EditProfile() {
       <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-4">
         <Input label="Full name *" value={form.name} onChange={update('name')} required />
         <Input label="University *" value={form.university} onChange={update('university')} required />
-        <Select label="Home city *" value={form.home_city} onChange={update('home_city')} required>
-          <option value="">Select city</option>
-          {GERMAN_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-        </Select>
+        <CitySelect label="Home city" value={form.home_city} onChange={v => setForm(p => ({ ...p, home_city: v }))} required />
         <Textarea label="Bio (optional)" value={form.bio} onChange={update('bio')} rows={4} placeholder="Tell others about yourself…" />
         {error && <p className="text-sm text-red-600">{error}</p>}
         <Button type="submit" disabled={loading} size="lg" className="w-full">

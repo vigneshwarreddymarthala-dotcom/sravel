@@ -7,6 +7,7 @@ import Spinner from '../../components/ui/Spinner'
 
 export default function Feed() {
   const { profile } = useAuth()
+  const navigate = useNavigate()
   const [tab, setTab] = useState('seeking')
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -22,7 +23,7 @@ export default function Feed() {
     let query = supabase
       .from('posts')
       .select('*, users(id, name, university, home_city)')
-      .in('status', ['open'])
+      .eq('status', 'open')
       .order('created_at', { ascending: false })
       .limit(20)
 
@@ -39,49 +40,75 @@ export default function Feed() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200 px-4 pt-12 pb-0 sticky top-0 z-10">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-100 px-4 md:px-6 pt-12 md:pt-6 pb-0 sticky top-0 z-10">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Speilfinder</h1>
+            <h1 className="text-xl font-bold text-gray-900">Home Feed</h1>
             {profile && (
-              <p className="text-xs text-gray-500">{profile.home_city}</p>
+              <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                <span>📍</span> {profile.home_city}
+              </p>
             )}
           </div>
+          <button
+            onClick={() => navigate('/post/create')}
+            className="hidden md:flex items-center gap-2 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors shadow"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            New post
+          </button>
         </div>
-        <div className="flex gap-0 border-b border-gray-100">
-          {['seeking', 'hosting'].map(t => (
+
+        {/* Tabs */}
+        <div className="flex gap-0">
+          {[
+            { key: 'seeking', label: '🔍 Seeking', desc: 'Looking for a place' },
+            { key: 'hosting', label: '🏠 Hosting', desc: 'Offering a place' },
+          ].map(t => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-5 py-3 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
-                tab === t
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 -mb-px flex flex-col items-start gap-0 ${
+                tab === t.key
                   ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-800'
               }`}
             >
-              {t}
+              <span>{t.label}</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="p-4 flex flex-col gap-3">
+      {/* Posts grid */}
+      <div className="p-4 md:p-6">
         {loading ? (
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-20">
             <Spinner size="lg" />
           </div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-4xl mb-3">🏙️</p>
-            <p className="text-gray-700 font-medium">
+          <div className="text-center py-20">
+            <p className="text-5xl mb-4">🏙️</p>
+            <p className="text-gray-800 font-semibold text-lg">
               {tab === 'seeking'
                 ? `No one is looking to stay in ${profile?.home_city} right now`
-                : 'No one is hosting right now'}
+                : 'No hosting posts yet'}
             </p>
-            <p className="text-gray-400 text-sm mt-1">Check back soon.</p>
+            <p className="text-gray-400 text-sm mt-2">Check back soon — or be the first to post!</p>
+            <button
+              onClick={() => navigate('/post/create')}
+              className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors"
+            >
+              Create a post
+            </button>
           </div>
         ) : (
-          posts.map(post => <PostCard key={post.id} post={post} />)
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {posts.map(post => <PostCard key={post.id} post={post} />)}
+          </div>
         )}
       </div>
     </div>

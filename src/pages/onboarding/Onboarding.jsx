@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import { GERMAN_CITIES } from '../../lib/constants'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
-import Select from '../../components/ui/Select'
+import CitySelect from '../../components/ui/CitySelect'
 import Textarea from '../../components/ui/Textarea'
 
 export default function Onboarding() {
@@ -74,17 +73,13 @@ export default function Onboarding() {
               onChange={update('university')}
               required
             />
-            <Select
-              label="Home city *"
+            <CitySelect
+              label="Home city"
               value={form.home_city}
-              onChange={update('home_city')}
+              onChange={v => setForm(p => ({ ...p, home_city: v }))}
+              placeholder="Search your city…"
               required
-            >
-              <option value="">Select your city</option>
-              {GERMAN_CITIES.map(c => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </Select>
+            />
             <Textarea
               label="Short bio (optional)"
               placeholder="Tell other students a little about yourself…"

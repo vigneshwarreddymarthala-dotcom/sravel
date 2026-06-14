@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import { GERMAN_CITIES } from '../../lib/constants'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
-import Select from '../../components/ui/Select'
+import CitySelect from '../../components/ui/CitySelect'
 import Textarea from '../../components/ui/Textarea'
 import Spinner from '../../components/ui/Spinner'
 
@@ -81,15 +80,9 @@ export default function EditPost() {
 
       <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-4">
         {post.type === 'seeking' ? (
-          <Select label="Destination city *" value={form.target_city} onChange={update('target_city')} error={errors.target_city}>
-            <option value="">Select city</option>
-            {GERMAN_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </Select>
+          <CitySelect label="Destination city" value={form.target_city} onChange={v => setForm(p => ({ ...p, target_city: v }))} error={errors.target_city} required />
         ) : (
-          <Select label="Target city (optional)" value={form.target_city} onChange={update('target_city')}>
-            <option value="">Open to everyone</option>
-            {GERMAN_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </Select>
+          <CitySelect label="Target city (optional)" value={form.target_city} onChange={v => setForm(p => ({ ...p, target_city: v }))} allowAny />
         )}
         <div className="grid grid-cols-2 gap-3">
           <Input label="From *" type="date" value={form.date_from} onChange={update('date_from')} error={errors.date_from} />

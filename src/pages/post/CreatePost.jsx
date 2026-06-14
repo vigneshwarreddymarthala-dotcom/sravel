@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import { GERMAN_CITIES } from '../../lib/constants'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
-import Select from '../../components/ui/Select'
+import CitySelect from '../../components/ui/CitySelect'
 import Textarea from '../../components/ui/Textarea'
 
 export default function CreatePost() {
@@ -111,31 +110,29 @@ export default function CreatePost() {
 
       <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-4">
         {type === 'seeking' ? (
-          <Select
-            label="Destination city *"
+          <CitySelect
+            label="Destination city"
             value={form.target_city}
-            onChange={update('target_city')}
+            onChange={v => setForm(p => ({ ...p, target_city: v }))}
+            placeholder="Search destination city…"
             error={errors.target_city}
-          >
-            <option value="">Where are you going?</option>
-            {GERMAN_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </Select>
+            required
+          />
         ) : (
           <>
             <div>
               <label className="text-sm font-medium text-gray-700">Your city (host location)</label>
-              <div className="mt-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-600">
-                {user?.home_city}
+              <div className="mt-1 px-3 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-600">
+                📍 {user?.home_city}
               </div>
             </div>
-            <Select
+            <CitySelect
               label="Target city (optional — leave blank for open hosting)"
               value={form.target_city}
-              onChange={update('target_city')}
-            >
-              <option value="">Open to everyone</option>
-              {GERMAN_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </Select>
+              onChange={v => setForm(p => ({ ...p, target_city: v }))}
+              placeholder="Search city or leave blank…"
+              allowAny
+            />
           </>
         )}
 
