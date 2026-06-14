@@ -87,7 +87,7 @@ export default function Activity() {
           <div className="text-center py-16">
             <p className="text-4xl mb-3">📭</p>
             <p className="text-gray-700 font-medium">
-              {tab === 'received' ? 'No requests yet' : 'You haven't accepted any posts'}
+              {tab === 'received' ? 'No requests yet' : "You haven't accepted any posts"}
             </p>
           </div>
         ) : (

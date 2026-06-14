@@ -171,7 +171,7 @@ export default function CreatePost() {
           label={`Story * (${form.story.length} chars, min 50)`}
           placeholder={
             type === 'seeking'
-              ? 'Tell why you're going, what you need, a bit about yourself…'
+              ? "Tell why you're going, what you need, a bit about yourself…"
               : 'Tell what you offer, your place, what dates work best…'
           }
           rows={5}
