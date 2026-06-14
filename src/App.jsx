@@ -4,6 +4,7 @@ import { ProtectedRoute, AdminRoute, GuestRoute } from './components/layout/Prot
 import AppLayout from './components/layout/AppLayout'
 import AdminLayout from './components/layout/AdminLayout'
 
+import Landing from './pages/Landing'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
@@ -33,7 +34,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Navigate to="/feed" replace />} />
+          <Route path="/" element={<Landing />} />
 
           {/* Guest routes */}
           <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
