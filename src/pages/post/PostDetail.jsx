@@ -24,6 +24,7 @@ export default function PostDetail() {
   const [showReport, setShowReport] = useState(false)
   const [reportData, setReportData] = useState({ reason: '', description: '' })
   const [reportSent, setReportSent] = useState(false)
+  const [acceptError, setAcceptError] = useState('')
 
   useEffect(() => {
     fetchPost()
@@ -43,8 +44,8 @@ export default function PostDetail() {
       const { data: conn } = await supabase
         .from('connections')
         .select('id')
-        .eq('post_id', id)
-        .eq('requester_id', user.id)
+        .eq('status', 'active')
+        .or(`and(requester_id.eq.${user.id},acceptor_id.eq.${postData.user_id}),and(requester_id.eq.${postData.user_id},acceptor_id.eq.${user.id})`)
         .maybeSingle()
       setAlreadyConnected(!!conn)
       setExistingConnId(conn?.id || null)
@@ -54,11 +55,19 @@ export default function PostDetail() {
 
   async function handleAccept() {
     setAccepting(true)
+    setAcceptError('')
     const { data: connId, error } = await supabase.rpc('accept_post', { p_post_id: post.id })
-    if (!error && connId) {
-      navigate(`/messages/${connId}`)
+    if (error) {
+      setAcceptError('Connection failed. Please try again or contact support.')
+      setAccepting(false)
+      return
     }
-    setAccepting(false)
+    if (connId) {
+      navigate(`/messages/${connId}`)
+    } else {
+      setAcceptError('Something went wrong. Please try again.')
+      setAccepting(false)
+    }
   }
 
   async function submitReport() {
@@ -145,6 +154,11 @@ export default function PostDetail() {
           </div>
         )}
 
+        {acceptError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+            {acceptError}
+          </div>
+        )}
         {canAccept && (
           <Button size="lg" className="w-full" onClick={handleAccept} disabled={accepting}>
             {accepting ? 'Connecting…' : '✓ Accept & connect'}
