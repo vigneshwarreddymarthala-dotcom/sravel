@@ -54,49 +54,9 @@ export default function PostDetail() {
 
   async function handleAccept() {
     setAccepting(true)
-
-    // Check if these two users already have an active connection from any previous post
-    const { data: existing } = await supabase
-      .from('connections')
-      .select('id')
-      .eq('status', 'active')
-      .or(
-        `and(requester_id.eq.${user.id},acceptor_id.eq.${post.user_id}),and(requester_id.eq.${post.user_id},acceptor_id.eq.${user.id})`
-      )
-      .limit(1)
-      .maybeSingle()
-
-    if (existing) {
-      await supabase.from('posts').update({ status: 'accepted' }).eq('id', post.id)
-      setAccepting(false)
-      navigate(`/messages/${existing.id}`)
-      return
-    }
-
-    const { data: conn, error } = await supabase
-      .from('connections')
-      .insert({
-        post_id: post.id,
-        requester_id: user.id,
-        acceptor_id: post.user_id,
-        status: 'active',
-      })
-      .select()
-      .single()
-
-    if (!error) {
-      await supabase.from('posts').update({ status: 'accepted' }).eq('id', post.id)
-
-      // Send automatic first message so chat is not empty
-      const autoMsg = `Hi! I accepted your post "${post.title}" 👋 Looking forward to connecting!`
-      await supabase.from('messages').insert({
-        connection_id: conn.id,
-        sender_id: user.id,
-        content: autoMsg,
-        read: false,
-      })
-
-      navigate(`/messages/${conn.id}`)
+    const { data: connId, error } = await supabase.rpc('accept_post', { p_post_id: post.id })
+    if (!error && connId) {
+      navigate(`/messages/${connId}`)
     }
     setAccepting(false)
   }
