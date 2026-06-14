@@ -39,7 +39,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
 
           {/* Guest routes */}
-          <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
