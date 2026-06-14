@@ -65,14 +65,12 @@ export default function PostDetail() {
       .maybeSingle()
 
     if (existing) {
-      // Reuse existing chat — just mark the post accepted, no new connection
       await supabase.from('posts').update({ status: 'accepted' }).eq('id', post.id)
       setAccepting(false)
       navigate(`/messages/${existing.id}`)
       return
     }
 
-    // No existing connection — create a new one
     const { data: conn, error } = await supabase
       .from('connections')
       .insert({
@@ -86,6 +84,16 @@ export default function PostDetail() {
 
     if (!error) {
       await supabase.from('posts').update({ status: 'accepted' }).eq('id', post.id)
+
+      // Send automatic first message so chat is not empty
+      const autoMsg = `Hi! I accepted your post "${post.title}" 👋 Looking forward to connecting!`
+      await supabase.from('messages').insert({
+        connection_id: conn.id,
+        sender_id: user.id,
+        content: autoMsg,
+        read: false,
+      })
+
       navigate(`/messages/${conn.id}`)
     }
     setAccepting(false)
