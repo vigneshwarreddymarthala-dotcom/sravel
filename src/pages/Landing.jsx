@@ -59,6 +59,9 @@ const TESTIMONIALS = [
 export default function Landing() {
   const { session, profile } = useAuth()
   const navigate = useNavigate()
+  const loggedIn = !!(session && profile)
+  const loginTo = loggedIn ? '/feed' : '/login'
+  const registerTo = loggedIn ? '/feed' : '/register'
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
@@ -79,10 +82,10 @@ export default function Landing() {
               </Link>
             ) : (
               <>
-                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors hidden sm:block">
+                <Link to={loginTo} className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors hidden sm:block">
                   Sign in
                 </Link>
-                <Link to="/register" className="text-sm font-semibold bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                <Link to={registerTo} className="text-sm font-semibold bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
                   Get started free
                 </Link>
               </>
@@ -113,10 +116,10 @@ export default function Landing() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
-          <Link to="/register" className="w-full sm:w-auto bg-blue-600 text-white font-bold px-8 py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 text-base">
+          <Link to={registerTo} className="w-full sm:w-auto bg-blue-600 text-white font-bold px-8 py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 text-base">
             Join for free →
           </Link>
-          <Link to="/login" className="w-full sm:w-auto bg-white text-gray-700 font-semibold px-8 py-4 rounded-2xl border border-gray-200 hover:bg-gray-50 transition-colors text-base">
+          <Link to={loginTo} className="w-full sm:w-auto bg-white text-gray-700 font-semibold px-8 py-4 rounded-2xl border border-gray-200 hover:bg-gray-50 transition-colors text-base">
             Sign in
           </Link>
         </div>
@@ -291,7 +294,7 @@ export default function Landing() {
             Join students across Germany who travel smarter. Free place to stay, real connections, zero cost.
           </p>
           <Link
-            to="/register"
+            to={registerTo}
             className="inline-block bg-white text-blue-700 font-bold px-10 py-4 rounded-2xl hover:bg-blue-50 transition-colors text-lg shadow-xl"
           >
             Create your free account →
@@ -312,8 +315,8 @@ export default function Landing() {
             <span className="text-gray-400 text-sm">student + travel</span>
           </div>
           <div className="flex items-center gap-6 text-sm text-gray-400">
-            <Link to="/register" className="hover:text-gray-700 transition-colors">Register</Link>
-            <Link to="/login" className="hover:text-gray-700 transition-colors">Sign in</Link>
+            <Link to={registerTo} className="hover:text-gray-700 transition-colors">Register</Link>
+            <Link to={loginTo} className="hover:text-gray-700 transition-colors">Sign in</Link>
             <span>© 2026 sravel</span>
           </div>
         </div>
