@@ -73,12 +73,20 @@ export default function Landing() {
             <span className="font-black text-xl text-gray-900 tracking-tight">sravel</span>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors hidden sm:block">
-              Sign in
-            </Link>
-            <Link to="/register" className="text-sm font-semibold bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
-              Get started free
-            </Link>
+            {session && profile ? (
+              <Link to="/feed" className="text-sm font-semibold bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                Go to feed
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors hidden sm:block">
+                  Sign in
+                </Link>
+                <Link to="/register" className="text-sm font-semibold bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                  Get started free
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
