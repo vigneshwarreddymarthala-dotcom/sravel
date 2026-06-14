@@ -52,6 +52,27 @@ export default function PostDetail() {
 
   async function handleAccept() {
     setAccepting(true)
+
+    // Check if these two users already have an active connection from any previous post
+    const { data: existing } = await supabase
+      .from('connections')
+      .select('id')
+      .eq('status', 'active')
+      .or(
+        `and(requester_id.eq.${user.id},acceptor_id.eq.${post.user_id}),and(requester_id.eq.${post.user_id},acceptor_id.eq.${user.id})`
+      )
+      .limit(1)
+      .maybeSingle()
+
+    if (existing) {
+      // Reuse existing chat — just mark the post accepted, no new connection
+      await supabase.from('posts').update({ status: 'accepted' }).eq('id', post.id)
+      setAccepting(false)
+      navigate(`/messages/${existing.id}`)
+      return
+    }
+
+    // No existing connection — create a new one
     const { data: conn, error } = await supabase
       .from('connections')
       .insert({
