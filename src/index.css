@@ -3,12 +3,63 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    /* Prevent iOS landscape font inflation */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     @apply bg-gray-50 text-gray-900 antialiased;
     font-family: system-ui, -apple-system, sans-serif;
+    /* Prevent rubber-band overscroll on iOS/Android */
+    overscroll-behavior-y: none;
   }
+
   #root {
     width: 100%;
-    min-height: 100vh;
+    /* dvh = dynamic viewport height — accounts for mobile browser chrome */
+    min-height: 100dvh;
   }
+
+  /* Remove blue/orange tap flash on all platforms */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Eliminate 300ms tap delay on interactive elements */
+  button,
+  a,
+  [role="button"],
+  label {
+    touch-action: manipulation;
+  }
+
+  /* iOS zoom prevention — inputs must render at >= 16px on focus.
+     Only applied on mobile; desktop keeps whatever size Tailwind sets. */
+  @media screen and (max-width: 767px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* ── Safe area header padding ────────────────────────────────────────
+   Mobile: max(3rem, notch/Dynamic Island height) so content never
+           slides under the status bar on any iPhone or Android device.
+   Desktop (md+): flat 1.5rem — sidebar is present, no status bar.
+   ──────────────────────────────────────────────────────────────────── */
+:root {
+  --page-pt: max(3rem, env(safe-area-inset-top, 0px));
+}
+@media (min-width: 768px) {
+  :root {
+    --page-pt: 1.5rem;
+  }
+}
+
+.safe-top {
+  padding-top: var(--page-pt);
 }
