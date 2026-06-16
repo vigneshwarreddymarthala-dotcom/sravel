@@ -28,7 +28,7 @@ export default function BottomNav() {
       label: '',
       isAction: true,
       icon: () => (
-        <div className="w-13 h-13 bg-blue-600 rounded-full flex items-center justify-center -mt-6 shadow-lg border-4 border-gray-50">
+        <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center -mt-6 shadow-lg shadow-blue-200 border-4 border-gray-50 active:scale-95 transition-transform">
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
           </svg>
@@ -85,7 +85,8 @@ export default function BottomNav() {
           </NavLink>
         ))}
       </div>
-      <div className="h-safe-bottom bg-white" />
+      {/* iPhone home indicator safe area */}
+      <div className="bg-white" style={{ height: 'env(safe-area-inset-bottom)' }} />
     </nav>
   )
 }

@@ -37,7 +37,10 @@ export default function AppLayout() {
 
         {/* Main content */}
         <div className="flex-1 md:ml-64 lg:ml-72 min-h-screen">
-          <div className={`max-w-3xl mx-auto w-full ${!isChat ? 'pb-16 md:pb-0' : ''}`}>
+          <div
+          className={`max-w-3xl mx-auto w-full ${!isChat ? 'md:pb-0' : ''}`}
+          style={!isChat ? { paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' } : undefined}
+        >
             <Outlet />
           </div>
         </div>

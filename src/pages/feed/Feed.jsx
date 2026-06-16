@@ -16,24 +16,14 @@ export default function Feed() {
     if (!profile) return
     fetchPosts()
 
-    // Realtime: remove post instantly when it gets accepted/removed by anyone
     const channel = supabase
       .channel(`feed-${tab}`)
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'posts',
-      }, (payload) => {
-        const updated = payload.new
-        if (updated.status !== 'open') {
-          setPosts(prev => prev.filter(p => p.id !== updated.id))
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'posts' }, (payload) => {
+        if (payload.new.status !== 'open') {
+          setPosts(prev => prev.filter(p => p.id !== payload.new.id))
         }
       })
-      .on('postgres_changes', {
-        event: 'DELETE',
-        schema: 'public',
-        table: 'posts',
-      }, (payload) => {
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'posts' }, (payload) => {
         setPosts(prev => prev.filter(p => p.id !== payload.old.id))
       })
       .subscribe()
@@ -47,7 +37,7 @@ export default function Feed() {
 
     let query = supabase
       .from('posts')
-      .select('*, users(id, name, university, home_city)')
+      .select('*, users(id, name, university, home_city, avatar_url)')
       .eq('status', 'open')
       .order('created_at', { ascending: false })
       .limit(20)
@@ -66,14 +56,17 @@ export default function Feed() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-4 md:px-6 pt-12 md:pt-6 pb-0 sticky top-0 z-10">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white border-b border-gray-100 px-4 md:px-6 pt-12 md:pt-6 pb-3 sticky top-0 z-10">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Home Feed</h1>
+            <h1 className="text-xl font-bold text-gray-900">Feed</h1>
             {profile && (
-              <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
-                <span>📍</span> {profile.home_city}
-              </p>
+              <div className="flex items-center gap-1 mt-0.5">
+                <svg className="w-3 h-3 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                <span className="text-xs text-gray-400 font-medium">{profile.home_city}</span>
+              </div>
             )}
           </div>
           <button
@@ -87,28 +80,29 @@ export default function Feed() {
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-0">
+        {/* Pill tabs */}
+        <div className="flex bg-gray-100 rounded-xl p-1">
           {[
-            { key: 'seeking', label: '🔍 Seeking', desc: 'Looking for a place' },
-            { key: 'hosting', label: '🏠 Hosting', desc: 'Offering a place' },
+            { key: 'seeking', label: 'Seeking', icon: '🔍' },
+            { key: 'hosting', label: 'Hosting', icon: '🏠' },
           ].map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 -mb-px flex flex-col items-start gap-0 ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold rounded-lg transition-all ${
                 tab === t.key
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-800'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
             >
+              <span>{t.icon}</span>
               <span>{t.label}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Posts grid */}
+      {/* Posts */}
       <div className="p-4 md:p-6">
         {loading ? (
           <div className="flex justify-center py-20">
@@ -116,10 +110,12 @@ export default function Feed() {
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">🏙️</p>
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">{tab === 'seeking' ? '🔍' : '🏠'}</span>
+            </div>
             <p className="text-gray-800 font-semibold text-lg">
               {tab === 'seeking'
-                ? `No one is looking to stay in ${profile?.home_city} right now`
+                ? `No one seeking in ${profile?.home_city} right now`
                 : 'No hosting posts yet'}
             </p>
             <p className="text-gray-400 text-sm mt-2">Check back soon — or be the first to post!</p>
@@ -131,7 +127,7 @@ export default function Feed() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {posts.map(post => <PostCard key={post.id} post={post} />)}
           </div>
         )}

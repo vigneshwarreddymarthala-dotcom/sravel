@@ -135,7 +135,7 @@ export default function PostDetail() {
         </div>
 
         <Link to={`/profile/${author?.id}`} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
-          <Avatar name={author?.name} size="lg" />
+          <Avatar name={author?.name} src={author?.avatar_url} size="lg" />
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-gray-900">{author?.name}</p>
             <p className="text-sm text-gray-500 truncate">{author?.university}</p>
