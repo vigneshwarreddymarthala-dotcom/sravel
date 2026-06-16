@@ -38,3 +38,32 @@ export const SUPPORT_SUBJECTS = [
   'Safety concern',
   'Other',
 ]
+
+export const GERMAN_STATES = [
+  'Baden-Württemberg', 'Bavaria', 'Berlin', 'Brandenburg', 'Bremen',
+  'Hamburg', 'Hesse', 'Lower Saxony', 'Mecklenburg-Vorpommern',
+  'North Rhine-Westphalia', 'Rhineland-Palatinate', 'Saarland',
+  'Saxony', 'Saxony-Anhalt', 'Schleswig-Holstein', 'Thuringia',
+]
+
+export const COUNTRIES = [
+  'Germany', 'Austria', 'Switzerland',
+  'United Kingdom', 'Ireland', 'France', 'Italy', 'Spain', 'Portugal',
+  'Netherlands', 'Belgium', 'Luxembourg', 'Denmark', 'Sweden', 'Norway',
+  'Finland', 'Poland', 'Czech Republic', 'Slovakia', 'Hungary', 'Romania',
+  'Bulgaria', 'Croatia', 'Slovenia', 'Greece', 'Turkey',
+  'United States', 'Canada', 'Mexico', 'Brazil', 'Argentina',
+  'Australia', 'New Zealand',
+  'Japan', 'South Korea', 'China', 'India', 'Singapore', 'Thailand',
+  'Indonesia', 'Vietnam', 'Philippines',
+  'South Africa', 'Nigeria', 'Egypt', 'Morocco',
+  'Russia', 'Ukraine', 'Israel', 'UAE', 'Saudi Arabia',
+]
+
+export const LANGUAGES = [
+  'German', 'English', 'French', 'Spanish', 'Italian', 'Portuguese',
+  'Dutch', 'Polish', 'Russian', 'Turkish', 'Arabic', 'Chinese (Mandarin)',
+  'Japanese', 'Korean', 'Hindi', 'Swedish', 'Norwegian', 'Danish',
+  'Finnish', 'Greek', 'Czech', 'Romanian', 'Hungarian', 'Ukrainian',
+  'Hebrew', 'Persian', 'Indonesian', 'Vietnamese', 'Thai',
+]

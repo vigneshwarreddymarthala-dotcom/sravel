@@ -6,6 +6,11 @@ import Avatar from '../../components/ui/Avatar'
 import Spinner from '../../components/ui/Spinner'
 import Button from '../../components/ui/Button'
 
+function locationString(profile) {
+  const parts = [profile.home_city, profile.home_state, profile.home_country].filter(Boolean)
+  return parts.join(', ')
+}
+
 export default function UserProfile() {
   const { userId } = useParams()
   const navigate = useNavigate()
@@ -68,14 +73,27 @@ export default function UserProfile() {
       <div className="p-4 flex flex-col gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-6">
           <div className="flex items-center gap-4 mb-4">
-            <Avatar name={profile.name} size="xl" />
+            <Avatar name={profile.name} src={profile.avatar_url} size="xl" />
             <div>
               <h2 className="text-xl font-bold text-gray-900">{profile.name}</h2>
               <p className="text-sm text-gray-600">{profile.university}</p>
-              <p className="text-sm text-gray-500">{profile.home_city}</p>
+              <p className="text-sm text-gray-500">{locationString(profile)}</p>
             </div>
           </div>
-          {profile.bio && <p className="text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">{profile.bio}</p>}
+
+          {profile.languages?.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {profile.languages.map(lang => (
+                <span key={lang} className="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-medium">
+                  {lang}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {profile.bio && (
+            <p className="text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">{profile.bio}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -106,7 +124,7 @@ export default function UserProfile() {
                   onChange={e => setReportData(p => ({ ...p, reason: e.target.value }))}
                 >
                   <option value="">Select reason</option>
-                  {['Fake post','Inappropriate content','Spam','Safety concern','Other'].map(r => (
+                  {['Fake post', 'Inappropriate content', 'Spam', 'Safety concern', 'Other'].map(r => (
                     <option key={r} value={r}>{r}</option>
                   ))}
                 </select>

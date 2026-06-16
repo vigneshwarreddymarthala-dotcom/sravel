@@ -6,6 +6,11 @@ import Avatar from '../../components/ui/Avatar'
 import Button from '../../components/ui/Button'
 import Spinner from '../../components/ui/Spinner'
 
+function locationString(profile) {
+  const parts = [profile.home_city, profile.home_state, profile.home_country].filter(Boolean)
+  return parts.join(', ')
+}
+
 export default function Profile() {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
@@ -43,13 +48,24 @@ export default function Profile() {
       <div className="p-4 flex flex-col gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-6">
           <div className="flex items-center gap-4 mb-4">
-            <Avatar name={profile.name} size="xl" />
+            <Avatar name={profile.name} src={profile.avatar_url} size="xl" />
             <div>
               <h2 className="text-xl font-bold text-gray-900">{profile.name}</h2>
               <p className="text-sm text-gray-600">{profile.university}</p>
-              <p className="text-sm text-gray-500">{profile.home_city}</p>
+              <p className="text-sm text-gray-500">{locationString(profile)}</p>
             </div>
           </div>
+
+          {profile.languages?.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {profile.languages.map(lang => (
+                <span key={lang} className="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-medium">
+                  {lang}
+                </span>
+              ))}
+            </div>
+          )}
+
           {profile.bio && (
             <p className="text-sm text-gray-700 leading-relaxed border-t border-gray-100 pt-4">{profile.bio}</p>
           )}
@@ -97,7 +113,7 @@ export default function Profile() {
         </div>
 
         <div className="text-center text-xs text-gray-400 pb-2">
-          Member since {new Date(profile.created_at).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })}
+          Member since {new Date(profile.created_at).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
         </div>
 
         <Button variant="outline" className="w-full" onClick={handleLogout}>

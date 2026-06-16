@@ -177,6 +177,37 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
 -- ═══════════════════════════════════════════════════════════
 -- POST EXPIRY FUNCTION (run via pg_cron or Supabase cron)
 -- ═══════════════════════════════════════════════════════════
+-- ═══════════════════════════════════════════════════════════
+-- MIGRATIONS
+-- Run these in Supabase SQL Editor if schema already exists
+-- ═══════════════════════════════════════════════════════════
+
+ALTER TABLE public.users
+  ADD COLUMN IF NOT EXISTS home_country text NOT NULL DEFAULT 'Germany',
+  ADD COLUMN IF NOT EXISTS home_state   text,
+  ADD COLUMN IF NOT EXISTS avatar_url   text,
+  ADD COLUMN IF NOT EXISTS languages    text[] DEFAULT '{}';
+
+-- Storage: create the avatars bucket manually in Supabase Dashboard
+-- (Storage → New bucket → name: "avatars", Public: on)
+-- Then add these RLS policies on storage.objects:
+
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "avatars_select" ON storage.objects FOR SELECT
+  USING (bucket_id = 'avatars');
+
+CREATE POLICY "avatars_insert" ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+CREATE POLICY "avatars_update" ON storage.objects FOR UPDATE
+  USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+CREATE POLICY "avatars_delete" ON storage.objects FOR DELETE
+  USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- ═══════════════════════════════════════════════════════════
+
 CREATE OR REPLACE FUNCTION expire_old_posts()
 RETURNS void LANGUAGE sql AS $$
   UPDATE public.posts

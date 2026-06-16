@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { GERMAN_CITIES } from '../../lib/constants'
 
-export default function CitySelect({ label, value, onChange, placeholder = 'Search city…', error, required, allowAny = false }) {
+export default function CitySelect({ label, value, onChange, placeholder = 'Search city…', error, required, allowAny = false, cities = GERMAN_CITIES }) {
   const [query, setQuery] = useState(value || '')
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
@@ -18,7 +18,7 @@ export default function CitySelect({ label, value, onChange, placeholder = 'Sear
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  const filtered = GERMAN_CITIES.filter(c =>
+  const filtered = cities.filter(c =>
     c.toLowerCase().includes(query.toLowerCase())
   )
 
