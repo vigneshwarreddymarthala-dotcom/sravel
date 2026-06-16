@@ -47,7 +47,7 @@ export default function Notifications() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-100 px-4 pt-4 md:pt-6 pb-4 sticky top-14 md:top-0 z-10 flex items-center justify-between">
+      <div className="bg-white border-b border-gray-100 px-4 pt-4 md:pt-6 pb-4 sticky top-14 z-10 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Notifications</h1>
           <p className="text-xs text-gray-400 mt-0.5">{notifications.length} total</p>

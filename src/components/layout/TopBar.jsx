@@ -10,7 +10,7 @@ export default function TopBar() {
 
   return (
     <div
-      className="fixed left-0 right-0 top-0 md:hidden bg-white border-b border-gray-100 z-50"
+      className="fixed left-0 right-0 top-0 bg-white/80 backdrop-blur-xl border-b border-black/[0.06] z-50"
       style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
     >
       <div className="h-14 flex items-center justify-between px-4">

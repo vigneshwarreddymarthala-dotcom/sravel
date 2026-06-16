@@ -95,7 +95,7 @@ export default function BlogList() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-black/[0.06] px-4 md:px-8 pt-4 md:pt-7 pb-3 sticky top-14 md:top-0 z-10">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-black/[0.06] px-4 md:px-8 pt-4 md:pt-7 pb-3 sticky top-14 z-10">
         <div className="flex items-end justify-between mb-4">
           <div>
             <h1 className="text-[28px] md:text-[32px] font-bold tracking-tight text-gray-900 leading-none">Travel Stories</h1>

@@ -40,7 +40,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200 px-4 pt-4 pb-4 sticky top-14 md:top-0 z-10 flex items-center justify-between">
+      <div className="bg-white border-b border-gray-200 px-4 pt-4 pb-4 sticky top-14 z-10 flex items-center justify-between">
         <h1 className="text-xl font-bold text-gray-900">Profile</h1>
         <button onClick={() => navigate('/profile/edit')} className="text-blue-600 text-sm font-medium">Edit</button>
       </div>

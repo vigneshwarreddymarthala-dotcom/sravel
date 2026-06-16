@@ -73,7 +73,7 @@ export default function Messages() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-4 md:px-6 pt-4 md:pt-6 pb-4 sticky top-14 md:top-0 z-10">
+      <div className="bg-white border-b border-gray-100 px-4 md:px-6 pt-4 md:pt-6 pb-4 sticky top-14 z-10">
         <h1 className="text-xl font-bold text-gray-900">Messages</h1>
         <p className="text-xs text-gray-400 mt-0.5">Your active connections</p>
       </div>

@@ -1,7 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { Component } from 'react'
 import BottomNav from './BottomNav'
-import SideNav from './SideNav'
 import TopBar from './TopBar'
 
 class ErrorBoundary extends Component {
@@ -25,44 +24,28 @@ class ErrorBoundary extends Component {
 
 export default function AppLayout() {
   const { pathname } = useLocation()
-  // Hide bottom nav inside chat — same as WhatsApp behaviour
   const isChat = /^\/messages\/.+/.test(pathname)
 
   return (
     <ErrorBoundary>
-      {/* Global top bar — mobile only */}
-      <div className="md:hidden">
-        <ErrorBoundary><TopBar /></ErrorBoundary>
+      {/* Global top bar — all screen sizes */}
+      <ErrorBoundary><TopBar /></ErrorBoundary>
+
+      {/* Spacer for fixed top bar */}
+      <div style={{ height: 'calc(3.5rem + env(safe-area-inset-top, 0px))' }} />
+
+      {/* Main content — centered, full width */}
+      <div
+        className="max-w-4xl mx-auto w-full"
+        style={!isChat ? { paddingBottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' } : undefined}
+      >
+        <Outlet />
       </div>
 
-      <div className="min-h-screen bg-gray-50 flex">
-        {/* Sidebar — tablet & desktop */}
-        <div className="hidden md:flex md:flex-col md:w-60 lg:w-64 md:fixed md:inset-y-0 md:left-0 z-30">
-          <ErrorBoundary><SideNav /></ErrorBoundary>
-        </div>
-
-        {/* Main content */}
-        <div className="flex-1 md:ml-60 lg:ml-64 min-h-screen">
-          {/* Spacer for fixed top bar on mobile */}
-          <div
-            className="md:hidden"
-            style={{ height: 'calc(3.5rem + env(safe-area-inset-top, 0px))' }}
-          />
-          <div
-            className={`max-w-4xl mx-auto w-full ${!isChat ? 'md:pb-0' : ''}`}
-            style={!isChat ? { paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' } : undefined}
-          >
-            <Outlet />
-          </div>
-        </div>
-
-        {/* Bottom nav — mobile only, hidden inside chat */}
-        {!isChat && (
-          <div className="md:hidden">
-            <ErrorBoundary><BottomNav /></ErrorBoundary>
-          </div>
-        )}
-      </div>
+      {/* Bottom nav / dock — all screen sizes, hidden inside chat */}
+      {!isChat && (
+        <ErrorBoundary><BottomNav /></ErrorBoundary>
+      )}
     </ErrorBoundary>
   )
 }
