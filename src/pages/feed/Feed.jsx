@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import { useNotifications } from '../../hooks/useNotifications'
 import PostCard from './PostCard'
 import Spinner from '../../components/ui/Spinner'
-import Avatar from '../../components/ui/Avatar'
 
 export default function Feed() {
   const { profile } = useAuth()
@@ -59,7 +57,7 @@ export default function Feed() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-4 md:px-6 pt-12 md:pt-6 pb-3 sticky top-0 z-10">
+      <div className="bg-white border-b border-gray-100 px-4 md:px-6 pt-4 md:pt-6 pb-3 sticky top-14 md:top-0 z-10">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Feed</h1>
@@ -73,25 +71,6 @@ export default function Feed() {
             )}
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate('/notifications')}
-              className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors"
-            >
-              <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              {unread > 0 && (
-                <span className="absolute top-1 right-1 min-w-[16px] h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
-                  {unread > 9 ? '9+' : unread}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => navigate('/profile')}
-              className="ml-1 active:scale-95 transition-transform"
-            >
-              <Avatar name={profile?.name || ''} src={profile?.avatar_url} size="sm" />
-            </button>
             <button
               onClick={() => navigate('/post/create')}
               className="hidden md:flex items-center gap-2 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors shadow"

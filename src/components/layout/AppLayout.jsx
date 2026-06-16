@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Component } from 'react'
 import BottomNav from './BottomNav'
 import SideNav from './SideNav'
+import TopBar from './TopBar'
 
 class ErrorBoundary extends Component {
   state = { error: null }
@@ -29,6 +30,11 @@ export default function AppLayout() {
 
   return (
     <ErrorBoundary>
+      {/* Global top bar — mobile only */}
+      <div className="md:hidden">
+        <ErrorBoundary><TopBar /></ErrorBoundary>
+      </div>
+
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar — tablet & desktop */}
         <div className="hidden md:flex md:flex-col md:w-64 lg:w-72 md:fixed md:inset-y-0 md:left-0 z-30">
@@ -37,10 +43,15 @@ export default function AppLayout() {
 
         {/* Main content */}
         <div className="flex-1 md:ml-64 lg:ml-72 min-h-screen">
+          {/* Spacer for fixed top bar on mobile */}
           <div
-          className={`max-w-3xl mx-auto w-full ${!isChat ? 'md:pb-0' : ''}`}
-          style={!isChat ? { paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' } : undefined}
-        >
+            className="md:hidden"
+            style={{ height: 'calc(3.5rem + env(safe-area-inset-top, 0px))' }}
+          />
+          <div
+            className={`max-w-3xl mx-auto w-full ${!isChat ? 'md:pb-0' : ''}`}
+            style={!isChat ? { paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' } : undefined}
+          >
             <Outlet />
           </div>
         </div>
