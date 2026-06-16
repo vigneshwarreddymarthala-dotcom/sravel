@@ -10,8 +10,9 @@
   }
 
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
-    font-family: system-ui, -apple-system, sans-serif;
+    @apply text-gray-900 antialiased;
+    background-color: #F5F5F7;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
     /* Prevent rubber-band overscroll on iOS/Android */
     overscroll-behavior-y: none;
   }

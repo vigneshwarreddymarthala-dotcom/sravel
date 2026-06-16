@@ -37,19 +37,19 @@ export default function AppLayout() {
 
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar — tablet & desktop */}
-        <div className="hidden md:flex md:flex-col md:w-64 lg:w-72 md:fixed md:inset-y-0 md:left-0 z-30">
+        <div className="hidden md:flex md:flex-col md:w-60 lg:w-64 md:fixed md:inset-y-0 md:left-0 z-30">
           <ErrorBoundary><SideNav /></ErrorBoundary>
         </div>
 
         {/* Main content */}
-        <div className="flex-1 md:ml-64 lg:ml-72 min-h-screen">
+        <div className="flex-1 md:ml-60 lg:ml-64 min-h-screen">
           {/* Spacer for fixed top bar on mobile */}
           <div
             className="md:hidden"
             style={{ height: 'calc(3.5rem + env(safe-area-inset-top, 0px))' }}
           />
           <div
-            className={`max-w-3xl mx-auto w-full ${!isChat ? 'md:pb-0' : ''}`}
+            className={`max-w-4xl mx-auto w-full ${!isChat ? 'md:pb-0' : ''}`}
             style={!isChat ? { paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' } : undefined}
           >
             <Outlet />

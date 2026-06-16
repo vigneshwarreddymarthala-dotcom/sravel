@@ -95,24 +95,24 @@ export default function BlogList() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-4 pt-4 md:pt-6 pb-3 sticky top-14 md:top-0 z-10">
-        <div className="flex items-center justify-between mb-3">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-black/[0.06] px-4 md:px-8 pt-4 md:pt-7 pb-3 sticky top-14 md:top-0 z-10">
+        <div className="flex items-end justify-between mb-4">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Travel Stories</h1>
-            <p className="text-xs text-gray-400 mt-0.5">Experiences from fellow students</p>
+            <h1 className="text-[28px] md:text-[32px] font-bold tracking-tight text-gray-900 leading-none">Travel Stories</h1>
+            <p className="text-[13px] text-gray-400 mt-1.5 font-medium">Experiences from fellow students</p>
           </div>
           <button
             onClick={() => navigate('/blogs/create')}
-            className="flex items-center gap-1.5 bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow"
+            className="flex items-center gap-1.5 bg-blue-600 text-white text-[13px] font-semibold px-4 py-2 rounded-full hover:bg-blue-500 active:scale-95 transition-all shadow-sm mb-1"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
             Write
           </button>
         </div>
 
-        <div className="flex bg-gray-100 rounded-xl p-1">
+        <div className="flex bg-black/[0.06] rounded-xl p-1 max-w-xs">
           {[
             { key: 'all', label: 'All Stories' },
             { key: 'mine', label: 'My Stories' },
@@ -120,7 +120,7 @@ export default function BlogList() {
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
+              className={`flex-1 py-1.5 text-[13px] font-semibold rounded-lg transition-all ${
                 tab === t.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
               }`}
             >
@@ -130,7 +130,7 @@ export default function BlogList() {
         </div>
       </div>
 
-      <div className="p-4 md:p-6">
+      <div className="p-4 md:p-8">
         {loading ? (
           <div className="flex justify-center py-20"><Spinner size="lg" /></div>
         ) : blogs.length === 0 ? (
