@@ -208,6 +208,30 @@ CREATE POLICY "avatars_delete" ON storage.objects FOR DELETE
 
 -- ═══════════════════════════════════════════════════════════
 
+-- ─── BLOGS (Travel Stories) ─────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.blogs (
+  id          uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  title       text NOT NULL,
+  place       text NOT NULL,
+  city        text,
+  country     text,
+  content     text NOT NULL,
+  cover_image_url text,
+  tags        text[] DEFAULT '{}',
+  created_at  timestamptz DEFAULT now(),
+  updated_at  timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "blogs_select_all" ON public.blogs FOR SELECT USING (true);
+CREATE POLICY "blogs_insert_own" ON public.blogs FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "blogs_update_own" ON public.blogs FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "blogs_delete_own" ON public.blogs FOR DELETE USING (auth.uid() = user_id);
+
+-- ═══════════════════════════════════════════════════════════
+
 CREATE OR REPLACE FUNCTION expire_old_posts()
 RETURNS void LANGUAGE sql AS $$
   UPDATE public.posts

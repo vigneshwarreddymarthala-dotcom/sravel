@@ -24,6 +24,9 @@ import UserProfile from './pages/profile/UserProfile'
 import Support from './pages/support/Support'
 import MyTickets from './pages/support/MyTickets'
 import Notifications from './pages/notifications/Notifications'
+import BlogList from './pages/blogs/BlogList'
+import CreateBlog from './pages/blogs/CreateBlog'
+import BlogDetail from './pages/blogs/BlogDetail'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminPosts from './pages/admin/AdminPosts'
@@ -61,6 +64,9 @@ export default function App() {
             <Route path="/support" element={<Support />} />
             <Route path="/support/tickets" element={<MyTickets />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/blogs" element={<BlogList />} />
+            <Route path="/blogs/create" element={<CreateBlog />} />
+            <Route path="/blogs/:id" element={<BlogDetail />} />
           </Route>
 
           {/* Admin panel */}

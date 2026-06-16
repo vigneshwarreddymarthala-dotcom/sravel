@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../hooks/useNotifications'
 import PostCard from './PostCard'
 import Spinner from '../../components/ui/Spinner'
+import Avatar from '../../components/ui/Avatar'
 
 export default function Feed() {
   const { profile } = useAuth()
@@ -84,6 +85,12 @@ export default function Feed() {
                   {unread > 9 ? '9+' : unread}
                 </span>
               )}
+            </button>
+            <button
+              onClick={() => navigate('/profile')}
+              className="ml-1 active:scale-95 transition-transform"
+            >
+              <Avatar name={profile?.name || ''} src={profile?.avatar_url} size="sm" />
             </button>
             <button
               onClick={() => navigate('/post/create')}
