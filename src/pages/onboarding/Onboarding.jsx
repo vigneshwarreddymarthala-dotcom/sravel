@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { COUNTRIES, GERMAN_CITIES, GERMAN_STATES } from '../../lib/constants'
+import { pickAndUploadAvatar } from '../../lib/camera'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import CitySelect from '../../components/ui/CitySelect'
@@ -13,7 +14,6 @@ import LanguageSelect from '../../components/ui/LanguageSelect'
 export default function Onboarding() {
   const navigate = useNavigate()
   const { session, refreshProfile } = useAuth()
-  const fileRef = useRef(null)
   const [form, setForm] = useState({
     name: session?.user?.user_metadata?.name || '',
     university: '',
@@ -36,18 +36,13 @@ export default function Onboarding() {
     setForm(p => ({ ...p, home_country: country, home_state: '', home_city: '' }))
   }
 
-  async function handlePhotoSelect(e) {
-    const file = e.target.files[0]
-    if (!file) return
+  async function handlePhotoSelect() {
     setUploadingPhoto(true)
-    const ext = file.name.split('.').pop()
-    const path = `${session.user.id}/avatar.${ext}`
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(path, file, { upsert: true })
-    if (!uploadError) {
-      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-      setForm(p => ({ ...p, avatar_url: publicUrl }))
+    try {
+      const url = await pickAndUploadAvatar(session.user.id)
+      if (url) setForm(p => ({ ...p, avatar_url: url }))
+    } catch (e) {
+      console.error(e)
     }
     setUploadingPhoto(false)
   }
@@ -100,7 +95,7 @@ export default function Onboarding() {
                 src={form.avatar_url}
                 size="xl"
                 editable
-                onClick={() => fileRef.current?.click()}
+                onClick={handlePhotoSelect}
               />
               {uploadingPhoto && (
                 <div className="absolute inset-0 bg-white/70 rounded-full flex items-center justify-center">
@@ -108,7 +103,6 @@ export default function Onboarding() {
                 </div>
               )}
             </div>
-            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoSelect} />
           </div>
           <p className="text-center text-xs text-gray-400 -mt-3 mb-5">Tap photo to upload</p>
 

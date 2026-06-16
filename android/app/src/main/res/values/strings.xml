@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">sravel</string>
+    <string name="title_activity_main">sravel</string>
+    <string name="package_name">de.spielfinder.app</string>
+    <string name="custom_url_scheme">de.spielfinder.app</string>
+</resources>
